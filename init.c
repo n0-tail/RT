@@ -10,7 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rtv1.h"
+#include "rt.h"
+
+void			init_parsed_data(t_data *data, char *type, int e)
+{
+	if (ft_strcmp(type, "object") == 0)
+		data->objnbr++;
+	if (ft_strcmp(data->obj_name, "SPHERE") == 0)
+		init_sphere(data, e);
+	if (ft_strcmp(data->obj_name, "SPOT") == 0)
+		data->spot->nbr += 1;
+	if (ft_strcmp(data->obj_name, "CYLINDER") == 0)
+		init_cylinder(data, e);
+	else if (ft_strcmp(data->obj_name, "PLANE") == 0)
+		init_plane(data, e);
+	else if (ft_strcmp(data->obj_name, "CONE") == 0)
+		init_cone(data, e);
+	else if (ft_strcmp(data->obj_name, "CAMERA") == 0)
+		init_camera(data);
+	else if (ft_strcmp(data->obj_name, "MODEL") == 0)
+		init_model(data, e);
+}
 
 t_ray			init_pixel(t_data *data, int x, int y, t_rgb *rgb)
 {
@@ -30,23 +50,9 @@ t_ray			init_pixel(t_data *data, int x, int y, t_rgb *rgb)
 	ray.target = vectoradd(ray.target, v[1]);
 	ray.target = vec_rot_z(ray.target, data->camera->rot.z);
 	ray.target = normalized_vector(ray.target);
-	data->light_scale = 1.0;
+	data->light_scale = (double)((data->scene->light_scale) * 0.2);
 	data->iter = data->org_iter;
 	return (ray);
-}
-
-void			setup(t_data *data)
-{
-	int			i;
-
-	i = 0;
-	if (data->cone->nbr > 0)
-	{
-		while (i < data->cone->nbr)
-			data->cone->angle[i] = tan(DTR(data->cone->angle[i]));
-		data->cone->rot[i] = vec_rot_zyx(vectornew(0, 1, 0),
-				data->cone->rot[i]);
-	}
 }
 
 void			init_data(t_data *data)
@@ -58,30 +64,18 @@ void			init_data(t_data *data)
 	data->cone->nbr = 0;
 	data->cylinder->nbr = 0;
 	data->plane->nbr = 0;
-	data->org_iter = 2;
-	data->hit.find_shadow = 0;
-	data->hit.preobj_name = NULL;
+	data->hit.find_shadow = FALSE;
+	data->hit.preobj_name = "empty";
 	data->hit.obj_name = NULL;
-	data->mat = 2;
 }
 
 void			init_mlx(t_data *data)
 {
-	if (data->exposure == 0)
-	{
 	data->win = mlx_new_window(data->mlx, WIDTH, HEIGHT, "name");
 	data->image = mlx_new_image(data->mlx, WIDTH, HEIGHT);
-	}
-	if (data->exposure == 1)
-	{
-		mlx_destroy_image(data->mlx, data->image);
-		data->image = mlx_new_image(data->mlx, WIDTH, HEIGHT);
-		ft_memset(data->data_addr, 0, ft_strlen(data->data_addr));
-	}
 	data->size_line = 1000;
 	data->endian = 0;
 	data->bits_per_pixel /= 8;
-	
 	data->data_addr = mlx_get_data_addr(
 		data->image,
 		&(data->bits_per_pixel),

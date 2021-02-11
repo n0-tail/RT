@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft/libft.h"
-#include "rtv1.h"
+#include "rt.h"
 
 t_data	*allocate_memory(t_data *data)
 {
@@ -28,7 +27,9 @@ t_data	*allocate_memory(t_data *data)
 		memory_allocation_fail();
 	if (!(data->camera = (t_camera *)malloc(sizeof(t_camera))))
 		memory_allocation_fail();
-		if (!(data->texture = (t_texture *)malloc(sizeof(t_texture))))
+	if (!(data->texture = (t_texturemap *)malloc(sizeof(t_texturemap))))
+		memory_allocation_fail();
+	if (!(data->scene = (t_scene *)malloc(sizeof(t_scene))))
 		memory_allocation_fail();
 	return (data);
 }
@@ -41,5 +42,7 @@ void	free_memory(t_data *data)
 	free(data->camera);
 	free(data->spot);
 	free(data->sphere);
+	free(data->texture);
+	free(data->model);
 	free(data);
 }

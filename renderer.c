@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   spot.c                                             :+:      :+:    :+:   */
+/*   renderer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anikkane <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,11 +11,29 @@
 /* ************************************************************************** */
 
 #include "rt.h"
+#include "pthread.h"
 
-void		copy_spot_data(t_data *data, char **parts, int e)
+void			pthread(t_data *data)
 {
-	data->spot->x[e] = ft_atoi(parts[0]);
-	data->spot->y[e] = ft_atoi(parts[1]);
-	data->spot->z[e] = ft_atoi(parts[2]);
-	data->spot->power[e] = ft_atoi(parts[3]);
+	t_data		*tab[THREAD_NUMBER];
+	pthread_t	t[THREAD_NUMBER];
+	int			i;
+
+	i = 0;
+	while (i < THREAD_NUMBER)
+	{
+		tab[i] = (t_data *)malloc(sizeof(t_data));
+		ft_memcpy((void*)tab[i], (void*)data, sizeof(t_data));
+		tab[i]->start_line = THREAD_WIDTH * i;
+		tab[i]->finish_line = THREAD_WIDTH * (i + 1);
+		if (pthread_create(&t[i], NULL,
+					(void *(*)(void *))draw, (void *)tab[i]))
+			exit(1);
+		i++;
+	}
+	while (i--)
+	{
+		pthread_join(t[i], NULL);
+		free(tab[i]);
+	}
 }

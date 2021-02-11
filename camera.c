@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rtv1.h"
+#include "rt.h"
 
 void				init_camera(t_data *data)
 {
@@ -34,52 +34,15 @@ void				init_camera(t_data *data)
 	data->camera->right = vector_copy(cam_right);
 }
 
-static void			copy_camera_data(t_data *data, char *str, int x)
+void				copy_camera_data(t_data *data, char **parts)
 {
-	if (x == 0)
-		data->camera->xyz.x = ft_atoi(str);
-	else if (x == 1)
-		data->camera->xyz.y = ft_atoi(str);
-	else if (x == 2)
-		data->camera->xyz.z = ft_atoi(str);
-	else if (x == 3)
-		data->camera->target.x = ft_atoi(str);
-	else if (x == 4)
-		data->camera->target.y = ft_atoi(str);
-	else if (x == 5)
-		data->camera->target.z = ft_atoi(str);
-	else if (x == 6)
-		data->camera->rot.x = ft_atoi(str);
-	else if (x == 7)
-		data->camera->rot.y = ft_atoi(str);
-	else if (x == 8)
-		data->camera->rot.z = ft_atoi(str);
-}
-
-void				parse_camera(char *line, t_data *data)
-{
-	int				i;
-	int				y;
-	char			*str;
-	int				x;
-
-	i = 0;
-	if (!(str = (char *)malloc(sizeof(char) * 6 + 1)))
-		memory_allocation_fail();
-	x = 0;
-	while (line[i] != '\0')
-	{
-		y = 0;
-		while (ft_isdigit(line[i]) == 0 && line[i] != '\0' && line[i] != '-')
-			i++;
-		str = if_negative(line, str, &i, &y);
-		while (ft_isdigit(line[i]) == 1 && line[i] != '\0' &&
-				line[i] != '-' && y < 6)
-			str[y++] = line[i++];
-		copy_camera_data(data, str, x);
-		x++;
-		ft_memset(str, 0, ft_strlen(str));
-	}
-	init_camera(data);
-	free(str);
+	data->camera->xyz.x = ft_atoi(parts[0]);
+	data->camera->xyz.y = ft_atoi(parts[1]);
+	data->camera->xyz.z = ft_atoi(parts[2]);
+	data->camera->target.x = ft_atoi(parts[3]);
+	data->camera->target.y = ft_atoi(parts[4]);
+	data->camera->target.z = ft_atoi(parts[5]);
+	data->camera->rot.x = ft_atoi(parts[6]);
+	data->camera->rot.y = ft_atoi(parts[7]);
+	data->camera->rot.z = ft_atoi(parts[8]);
 }

@@ -1,32 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   scene.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anikkane <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/01 10:17:18 by anikkane          #+#    #+#             */
-/*   Updated: 2020/11/18 13:16:44 by anikkane         ###   ########.fr       */
+/*   Created: 2020/11/18 12:37:25 by anikkane          #+#    #+#             */
+/*   Updated: 2020/11/18 12:38:32 by anikkane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-int				main(int argc, char **argv)
+void		copy_scene_data(t_data *data, char **parts)
 {
-	t_data		*data;
-	void		*mlx_ptr;
-
-	if (argc != 2)
-		wrong_scene_name();
-	data = NULL;
-	data = allocate_memory(data);
-	data->scene_name = argv[1];
-	mlx_ptr = mlx_init();
-	data->mlx = mlx_ptr;
-	read_scene(data);
-	mlx_key_hook(data->win, keypressed, data);
-	mlx_put_image_to_window(data->mlx, data->win, data->image, 0, 0);
-	mlx_loop(data->mlx);
-	free(data);
+	data->scene->background = ft_atoi(parts[0]);
+	data->scene->lambert = ft_atoi(parts[1]);
+	data->scene->light_scale = ft_atoi(parts[2]);
+	data->scene->shadows = ft_atoi(parts[3]);
+	data->scene->ref_iter = ft_atoi(parts[4]);
+	data->org_iter = data->scene->ref_iter;
+	data->scene->color_intensity = ft_atoi(parts[5]);
+	data->scene->reflection = ft_atoi(parts[6]);
 }

@@ -10,78 +10,37 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rtv1.h"
-#include "../libft/libft.h"
+#include "rt.h"
 
-static void		init_cone(t_data *data, int e, char *str)
+void		init_cone(t_data *data, int e)
 {
 	data->cone->axis[e] = vec_rot_zyx(vectornew(0, 1, 0), data->cone->rot[e]);
 	data->cone->angle[e] = tan(DTR(data->cone->angle[e]));
-	free(str);
+	data->cone->nbr += 1;
 }
 
-static void		copy_cone_data(t_data *data, char *str, int *x, int e)
+void		copy_cone_data(t_data *data, char **parts, int e)
 {
-	if (*x == 0)
-		data->cone->start_xyz[e].x = ft_atoi(str);
-	else if (*x == 1)
-		data->cone->start_xyz[e].y = ft_atoi(str);
-	else if (*x == 2)
-		data->cone->start_xyz[e].z = ft_atoi(str);
-	else if (*x == 3)
-		data->cone->angle[e] = ft_atoi(str);
-	else if (*x == 4)
-		data->cone->rgb2[e].red = ft_atoi(str);
-	else if (*x == 5)
-		data->cone->rgb2[e].green = ft_atoi(str);
-	else if (*x == 6)
-		data->cone->rgb2[e].blue = ft_atoi(str);
-	else if (*x == 7)
-		data->cone->rot[e].x = ft_atoi(str);
-	else if (*x == 8)
-		data->cone->rot[e].y = ft_atoi(str);
-	else if (*x == 9)
-		data->cone->rot[e].z = ft_atoi(str);
-	else
-		data->cone->mater[e] = ft_atoi(str);
-
-	*x += 1;
+	data->cone->start_xyz[e].x = ft_atoi(parts[0]);
+	data->cone->start_xyz[e].y = ft_atoi(parts[1]);
+	data->cone->start_xyz[e].z = ft_atoi(parts[2]);
+	data->cone->angle[e] = ft_atoi(parts[3]);
+	data->cone->rgb2[e].red = ft_atoi(parts[4]);
+	data->cone->rgb2[e].green = ft_atoi(parts[5]);
+	data->cone->rgb2[e].blue = ft_atoi(parts[6]);
+	data->cone->rot[e].x = ft_atoi(parts[7]);
+	data->cone->rot[e].y = ft_atoi(parts[8]);
+	data->cone->rot[e].z = ft_atoi(parts[9]);
+	data->cone->mater[e] = ft_atoi(parts[10]);
 }
 
-static int		count_objects(t_data *data)
+void		copy_hit_cone(t_data *data, int i)
 {
-	int			e;
-
-	data->objnbr++;
-	e = data->cone->nbr;
-	data->cone->nbr++;
-	return (e);
-}
-
-void			parse_cone(char *line, t_data *data)
-{
-	int		i;
-	int		y;
-	char	*str;
-	int		e;
-	int		x;
-
-	i = 0;
-	if (!(str = (char *)malloc(sizeof(char) * 6 + 1)))
-		memory_allocation_fail();
-	x = 0;
-	e = count_objects(data);
-	while (line[i] != '\0')
-	{
-		y = 0;
-		while (ft_isdigit(line[i]) == 0 && line[i] != '\0' && line[i] != '-')
-			i++;
-		str = if_negative(line, str, &i, &y);
-		while (ft_isdigit(line[i]) == 1 && line[i] != '\0' && line[i] != '-'
-				&& y < 6)
-			str[y++] = line[i++];
-		copy_cone_data(data, str, &x, e);
-		ft_memset(str, 0, ft_strlen(str));
-	}
-	init_cone(data, e, str);
+	data->hit.mater = data->cone->mater[i];
+	data->hit.color.red = data->cone->rgb2[i].red;
+	data->hit.color.green = data->cone->rgb2[i].green;
+	data->hit.color.blue = data->cone->rgb2[i].blue;
+	data->hit.texture.scale = 1;
+	data->hit.texture.txt_loaded = FALSE;
+	data->hit.texture.txt_pattern = FALSE;
 }

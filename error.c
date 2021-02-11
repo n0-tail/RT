@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft/libft.h"
-#include "rtv1.h"
+#include "rt.h"
 
 void	memory_allocation_fail(void)
 {
